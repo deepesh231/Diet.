@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health & Diet Planner</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: #eee;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #0a2342;
+      padding: 20px;
+      text-align: center;
+      color: #fff;
+    }
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.6);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 6px;
+      background: #2c2c2c;
+      color: #fff;
+    }
+    input[type="radio"], input[type="checkbox"] {
+      width: auto;
+      margin-right: 8px;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    .btn-primary {
+      background: #00c8ff;
+      color: #000;
+    }
+    .btn-secondary {
+      background: #444;
+      color: #fff;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      background: #2c2c2c;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Health & Diet Planner</h1>
+    <p>Get personalized nutrition recommendations based on your profile</p>
+  </header>
+
+  <div class="container">
+    <h2>Personal Information</h2>
+    <form id="dietForm">
+      <label>Age</label>
+      <input type="number" id="age" required>
+
+      <label>Gender</label>
+      <input type="radio" name="gender" value="Male" required> Male
+      <input type="radio" name="gender" value="Female" required> Female
+
+      <label>Height (cm)</label>
+      <input type="number" id="height" required>
+
+      <label>Weight (kg)</label>
+      <input type="number" id="weight" required>
+
+      <label>Activity Level</label>
+      <select id="activity" required>
+        <option value="">Select your activity level</option>
+        <option value="sedentary">Sedentary</option>
+        <option value="light">Light Activity</option>
+        <option value="moderate">Moderate Activity</option>
+        <option value="active">Active</option>
+      </select>
+
+      <label>Health Conditions</label>
+      <input type="checkbox" value="Diabetes"> Diabetes
+      <input type="checkbox" value="Hypertension"> Hypertension/Heart Disease
+      <input type="checkbox" value="Kidney Disease"> Kidney Disease
+      <input type="checkbox" value="Obesity"> Obesity
+      <input type="checkbox" value="Liver Disease"> Liver Disease
+      <input type="checkbox" value="Cancer"> Cancer
+      <input type="checkbox" value="Osteoporosis"> Osteoporosis
+      <input type="checkbox" value="COPD"> COPD/Respiratory Disease
+      <input type="checkbox" value="None"> None
+
+      <br><br>
+      <button type="button" class="btn btn-primary" onclick="generatePlan()">Generate Diet Plan</button>
+      <button type="reset" class="btn btn-secondary">Reset</button>
+    </form>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function generatePlan() {
+      const age = document.getElementById("age").value;
+      const height = document.getElementById("height").value;
+      const weight = document.getElementById("weight").value;
+      const activity = document.getElementById("activity").value;
+      const gender = document.querySelector('input[name="gender"]:checked').value;
+
+      const conditions = [];
+      document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+        if(cb.value !== "None") conditions.push(cb.value);
+      });
+
+      let plan = `<h3>Your Personalized Diet Plan</h3>`;
+      plan += `<p><b>Age:</b> ${age}, <b>Gender:</b> ${gender}, <b>Height:</b> ${height} cm, <b>Weight:</b> ${weight} kg</p>`;
+      plan += `<p><b>Activity Level:</b> ${activity}</p>`;
+
+      // Basic recommendations
+      plan += `<h4>General Nutrition</h4>`;
+      plan += `<ul>
+                <li>Eat balanced meals with protein, carbs, and healthy fats.</li>
+                <li>Include fruits, vegetables, and whole grains daily.</li>
+                <li>Stay hydrated with 2–3 liters of water per day.</li>
+              </ul>`;
+
+      // Activity level adjustment
+      if (activity === "active") {
+        plan += `<p>Since you're active, increase protein (lean meats, eggs, legumes) and complex carbs for energy.</p>`;
+      } else if (activity === "sedentary") {
+        plan += `<p>Since you're sedentary, control calorie intake and focus on vegetables and lean protein.</p>`;
+      }
+
+      // Disease-based suggestions
+      if (conditions.length > 0) {
+        plan += `<h4>Special Considerations</h4><ul>`;
+        conditions.forEach(cond => {
+          if (cond === "Diabetes") plan += `<li>Limit sugar, focus on low-GI foods like oats, beans, and leafy greens.</li>`;
+          if (cond === "Hypertension") plan += `<li>Reduce salt intake, eat potassium-rich foods like bananas and spinach.</li>`;
+          if (cond === "Kidney Disease") plan += `<li>Limit protein and phosphorus-rich foods, consult a nephrologist.</li>`;
+          if (cond === "Obesity") plan += `<li>Follow a calorie deficit, eat high-fiber, low-calorie meals.</li>`;
+          if (cond === "Liver Disease") plan += `<li>Avoid alcohol and fried foods, eat antioxidant-rich fruits.</li>`;
+          if (cond === "Cancer") plan += `<li>Boost immunity with fruits, vegetables, and omega-3 fatty acids.</li>`;
+          if (cond === "Osteoporosis") plan += `<li>Increase calcium (milk, yogurt) and vitamin D (sunlight, eggs).</li>`;
+          if (cond === "COPD") plan += `<li>Eat small, frequent meals rich in protein and healthy fats.</li>`;
+        });
+        plan += `</ul>`;
+      }
+
+      document.getElementById("result").innerHTML = plan;
+    }
+  </script>
+</body>
+</html>
